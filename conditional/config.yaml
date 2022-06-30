@@ -1,0 +1,74 @@
+RWCP_SSD:
+   root_dir: "/work/tamamori/onomato-wave/"
+   data_dir: "data/RWCP-SSD_Vol1/"  # RWCP-SSD_Vol1.zipを解凍したディレクトリ
+   wav_dir: "data/RWCP-SSD_Vol1_wav/"  # wavファイルの保存場所
+   model_dir: "model/"  # 訓練済モデルの保存場所
+   gen_dir: "gen_cond_ln_trim_60db/"  # モデルから合成した音声ファイルの保存場所
+   log_dir: "log/"  # ログファイルの保存場所
+   stats_dir: "stats/"  # 正規化時の平均および標準偏差の保存場所
+   dict_dir: "dict/"  # 音素記号と通し番号間の相互変換辞書の保存場所
+   onoma_jpdir: "data/RWCPSSD_Onomatopoeia/RWCP_SSD_Onomatopoeia_jp/"
+   onoma_endir: "data/RWCPSSD_Onomatopoeia/RWCP_SSD_Onomatopoeia_en/"
+   onoma_traindir: "data/RWCPSSD_Onomatopoeia-train"  # 訓練用のcsvファイルたち
+   onoma_testdir: "data/RWCPSSD_Onomatopoeia-test"    # 推論用のcsvファイルたち
+
+sound_event:    # モデル化の対象となる音響イベント
+   - "bells5"   # c1/bells5
+   - "clock1"   # c5/clock1
+   - "coffmill" # c5/coffmill
+   - "cup1"     # a4/cup1
+   - "drum"     # c3/drum
+   - "maracas"  # c3/maracas
+   - "shaver"   # c5/shaver
+   - "tear"     # c2/tear
+   - "trashbox" # a2/trashbox
+   - "whistle3" # c3/whistle3
+
+test_basename:  # 000-099のうち、推論時に使うwavファイルのbasename（拡張子なし）
+   - "000"
+   - "001"
+   - "002"
+   - "003"
+   - "004"
+
+feature:
+   sample_rate: 16000  # サンプリング周波数
+   n_fft: 2048  # FFTの窓長
+   win_length: 2048  # 分析窓長
+   hop_length: 512   # ホップ長
+   n_iter: 200  # Griffin-Lim アルゴリズムにおける繰り返し回数
+   top_db: 60  # targetの無音区間をトリミングする際、しきい値となるdB (librosa)
+
+model:
+   hidden_dim: 512
+   n_layers_enc: 1  # エンコーダの層数 (双方向LSTM)
+   n_layers_dec: 2  # デコーダの層数 (単方向LSTM)
+   criterion: "L1"  # 損失関数
+
+training:
+   n_epoch: 350  # エポック数
+   n_batch: 5    # ミニバッチサイズ
+   learning_rate: 0.0001  # 学習率
+   n_onomas: 15  # 1つのオーディオに対して用いるオノマトペの数（訓練時）
+   teacher_forcing_ratio: 0.6  # scheduled samplingの率
+   padvalue_spec: 0.0  # ミニバッチ構成時にスペクトログラムにパディングする値（訓練時）
+   model_prefix: "seq2seq_cond_ln_trim_60db"  # モデルファイル名の先頭につける識別子
+   scaler_file: "stats_ln_trim_60db.pkl"  # standard scalerの保存名
+   mapping_dict: "mapping_dict.pkl"  # 音素表現と数値表現を相互変換する辞書ファイル
+   use_scheduler: True  # 学習率調整のスケジューラを使うかどうか
+   gamma: 0.5    # 学習率の変更率 (scheduler)
+   milestones: # 学習率の変更タイミング (MultiStepLR)
+      - 200
+      - 250
+
+inference:
+  n_onomas: 2  # オーディオ1つの生成に対して オノマトペを何通り試すか
+  top_db: 60  # targetの無音区間をトリミングする際、しきい値となるdB (librosa)
+
+demo:
+   onomatopoeia: "b i i i i i i"
+   sound_event: "whistle3"
+   basename: "demo_cond_"
+   gen_dir: "demo_gen/"
+   n_frame: 20  # 合成音のフレーム数 ←秒を見積もるには hop_length(512)を掛けて16000で割る
+   pretrained_model: "pretrained_cond.pt"
