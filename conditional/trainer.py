@@ -95,6 +95,7 @@ class Trainer:
 
             if self.cfg.training.use_scheduler:
                 scheduler["seq2seq"].step()
+                scheduler["event"].step()
 
     def save(self):
         """Save model parameters."""
