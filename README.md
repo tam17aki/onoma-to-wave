@@ -40,13 +40,16 @@ You need to prepare the following two datasets.
     
 ## Extra: release of pretrained models
    
-Pretrained models are also available on the repository for demonstration purposes. Scripts are also available to easily try audio generation.
+Pretrained models are also available on the repository for demonstration purposes. Download pretrained models from here: 
+https://drive.google.com/drive/folders/1d2StFDdNhWVTBekSpZaSSkJB8Wn63G0G?usp=sharing
+
+Scripts are also available to easily try audio generation.
 
 - `demo.py` ... This is a script for environmental sound synthesis using trained models. Unlike `inference.py`, it can be easily synthesized based on onomatopoeia and acoustic events specified in the yaml file, and is somewhat simpler to implement since it does not use DataSet and DataLoader.
 
-- `pretrained_uncond.pt` ... Trained model without sound event conditioning. Download from here: https://www.dropbox.com/s/thbfqcxd5r9t8e3/pretrained_uncond.pt?dl=0
+- `pretrained_uncond.pt` ... Trained model without sound event conditioning.
 
-- `pretrained_cond.pt` ... Trained model with sound event conditioning. Download from here: https://www.dropbox.com/s/ehq8u812tayj52a/pretrained_cond.pt?dl=0
+- `pretrained_cond.pt` ... Trained model with sound event conditioning.
 
 First, edit `config.yaml` and provide the path to the trained model according to your environment. Next, provide the onomatopoeia (phoneme representation) you wish to synthesize and, if necessary, the acoustic events in the `config.yaml` file. We do not provide a demonstration that works on Google Colab like ESPnet.
   
