@@ -4,6 +4,8 @@ This repository provides unofficial implementations of Onoma-to-Wave.
 ## Licence
 MIT licence.
 
+Copyright (C) 2022 Akira Tamamori
+
 ## Dependencies
 We tested the implemention on Ubuntu 18.04. The verion of Python was `3.6.9`. The following modules are required:
 
