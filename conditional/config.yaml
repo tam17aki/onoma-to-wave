@@ -3,7 +3,7 @@ RWCP_SSD:
    data_dir: "data/RWCP-SSD_Vol1/"  # RWCP-SSD_Vol1.zipを解凍したディレクトリ
    wav_dir: "data/RWCP-SSD_Vol1_wav/"  # wavファイルの保存場所
    model_dir: "model/"  # 訓練済モデルの保存場所
-   gen_dir: "gen_cond_ln_trim_60db/"  # モデルから合成した音声ファイルの保存場所
+   gen_dir: "gen_cond/"  # モデルから合成した音声ファイルの保存場所
    log_dir: "log/"  # ログファイルの保存場所
    stats_dir: "stats/"  # 正規化時の平均および標準偏差の保存場所
    dict_dir: "dict/"  # 音素記号と通し番号間の相互変換辞書の保存場所
@@ -52,8 +52,8 @@ training:
    n_onomas: 15  # 1つのオーディオに対して用いるオノマトペの数（訓練時）
    teacher_forcing_ratio: 0.6  # scheduled samplingの率
    padvalue_spec: 0.0  # ミニバッチ構成時にスペクトログラムにパディングする値（訓練時）
-   model_prefix: "seq2seq_cond_ln_trim_60db"  # モデルファイル名の先頭につける識別子
-   scaler_file: "stats_ln_trim_60db.pkl"  # standard scalerの保存名
+   model_prefix: "seq2seq_cond"  # モデルファイル名の先頭につける識別子
+   scaler_file: "stats.pkl"  # standard scalerの保存名
    mapping_dict: "mapping_dict.pkl"  # 音素表現と数値表現を相互変換する辞書ファイル
    use_scheduler: True  # 学習率調整のスケジューラを使うかどうか
    gamma: 0.5    # 学習率の変更率 (scheduler)
