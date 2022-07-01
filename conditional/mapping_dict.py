@@ -67,7 +67,7 @@ class MappingDict:
 
         self._char2id.update({"<BOS>": 0, " ": 1})
 
-        for word in prg(train_csv, prefix="Dictionary creation from training data"):
+        for word in prg(train_csv, prefix="Dictionary creation from training data "):
             dataframe = pd.read_csv(word, header=None)
             for i in range(len(dataframe)):
 
@@ -77,7 +77,7 @@ class MappingDict:
                     if phone not in self._char2id:  # first appearance
                         self._char2id[phone] = len(self._char2id)  # add new phoneme
 
-        for word in prg(test_csv, prefix="Dictionary creation from test data"):
+        for word in prg(test_csv, prefix="Dictionary creation from test data "):
             dataframe = pd.read_csv(word, header=None)
             for i in range(len(dataframe)):
 
