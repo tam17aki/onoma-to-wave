@@ -42,7 +42,7 @@ def _make_symlink(src, dest):
         os.symlink(src, dest)
 
 
-def raw2wav(cfg: DictConfig):
+def raw_to_wav(cfg: DictConfig):
     """Convert raw to wav (RIFF header attachment)."""
     rawdir = os.path.join(
         cfg.RWCP_SSD.root_dir, cfg.RWCP_SSD.data_dir, "nospeech", "drysrc"
@@ -201,7 +201,7 @@ if __name__ == "__main__":
     with initialize(version_base=None, config_path="."):
         config = compose(config_name="config")
 
-    raw2wav(cfg=config)
+    raw_to_wav(cfg=config)
     make_csv(cfg=config)
     make_symlink(cfg=config)
 
