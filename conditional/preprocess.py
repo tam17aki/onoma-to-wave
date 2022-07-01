@@ -58,7 +58,7 @@ def raw_to_wav(cfg: DictConfig):
         if ("16khz" in path and path.endswith(".raw"))
     ]
 
-    for raw_file in prg(raw_filename_list, prefix="Convert raw to wav "):
+    for raw_file in prg(raw_filename_list, prefix="Convert raw to wav: "):
         wavdir_plain = os.path.dirname(raw_file.replace(rawdir, wavdir))
         os.makedirs(wavdir_plain, exist_ok=True)
         wave_file = os.path.join(
@@ -88,7 +88,7 @@ def make_symlink(cfg: DictConfig):
         if ("16khz" in path and path.endswith(".wav"))
     ]
 
-    for wav_file in prg(var["wav_filename_list"], prefix="Create symbolic links "):
+    for wav_file in prg(var["wav_filename_list"], prefix="Create symbolic links: "):
 
         # destination (file name)
         var["symlink_train"] = wav_file.replace(wavdir, wavdir_train)
@@ -130,7 +130,7 @@ def make_csv(cfg: DictConfig):
     for jp_path, en_path in prg(
         zip(var["jp_path"], var["en_path"]),
         total=len(var["jp_path"]),
-        prefix="Pack information into CSV file ",
+        prefix="Pack information into CSV file: ",
     ):
 
         var["jp_tmp"] = jp_path.split("/")
