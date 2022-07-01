@@ -98,7 +98,7 @@ def make_symlink(cfg: DictConfig):
         os.makedirs(os.path.dirname(var["symlink_train"]), mode=0o755, exist_ok=True)
         os.makedirs(os.path.dirname(var["symlink_test"]), mode=0o755, exist_ok=True)
 
-        if any(x in var["symlink_test"] for x in cfg.test_basename):
+        if any(basename in var["symlink_test"] for basename in cfg.test_basename):
             _make_symlink(src=wav_file, dest=var["symlink_test"])
         else:
             _make_symlink(src=wav_file, dest=var["symlink_train"])
@@ -201,9 +201,9 @@ if __name__ == "__main__":
     with initialize(version_base=None, config_path="."):
         config = compose(config_name="config")
 
-    raw_to_wav(cfg=config)
-    make_csv(cfg=config)
-    make_symlink(cfg=config)
+    raw_to_wav(config)
+    make_csv(config)
+    make_symlink(config)
 
     mapping_dict = MappingDict(config)
     mapping_dict.make()
