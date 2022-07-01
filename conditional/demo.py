@@ -117,6 +117,7 @@ class GeneratorDemo:
         os.makedirs(gen_dir, exist_ok=True)
 
         self.model["seq2seq"].eval()
+        self.model["event"].eval()
         self.model["bos"].eval()
 
         onomatopoeia = self._get_onoma_tensor()
