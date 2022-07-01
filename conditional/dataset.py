@@ -85,7 +85,6 @@ class OnomatopoeiaDataset(Dataset):
 
         # Get a list of unique acoustic events
         self.event_list = np.unique(np.array(events)).tolist()
-        assert set(self.event_list) == set(cfg.sound_event)
 
         # Pack spectrograms and other necessary items
         self._pack_items(char2id, spec_list, wav_path_list)
