@@ -68,7 +68,6 @@ class Trainer:
 
     def fit(self, dataloader):
         """Perform model training."""
-
         if self.cfg.training.use_scheduler:
             scheduler = get_scheduler(self.optimizer, self.cfg)
 
