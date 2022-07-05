@@ -63,7 +63,6 @@ training:
 
 inference:
   n_onomas: 2  # オーディオ1つの生成に対して オノマトペを何通り試すか
-  top_db: 60  # targetの無音区間をトリミングする際、しきい値となるdB (librosa)
 
 demo:
    onomatopoeia: "b i i i i i i"
