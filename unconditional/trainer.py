@@ -43,7 +43,7 @@ class Trainer:
 
     def _training_step(self, batch):
         """Perform a training step."""
-        onomatopoeia, specs, frame_length = batch
+        onomatopoeia, specs, frame_lengths = batch
 
         onomatopoeia = onomatopoeia.to(self.device)
         specs = specs.to(self.device).float()
@@ -57,7 +57,7 @@ class Trainer:
         loss = self.model["seq2seq"].get_loss(
             source=onomatopoeia,
             target=target,
-            frame_lengths=frame_length,
+            frame_lengths=frame_lengths,
             teacher_forcing_ratio=self.cfg.training.teacher_forcing_ratio,
         )
 
