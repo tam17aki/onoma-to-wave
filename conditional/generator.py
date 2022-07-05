@@ -52,14 +52,6 @@ class Generator:
         audio, _ = librosa.load(wavfile, sr=self.cfg.feature.sample_rate, mono=True)
         audio = librosa.util.normalize(audio)
 
-        # remove silence
-        audio, _ = librosa.effects.trim(
-            audio,
-            top_db=self.cfg.inference.top_db,
-            frame_length=self.cfg.feature.win_length,
-            hop_length=self.cfg.feature.hop_length,
-        )
-
         frames = librosa.util.frame(
             audio,
             frame_length=self.cfg.feature.win_length,
