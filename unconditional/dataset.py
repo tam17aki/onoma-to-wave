@@ -153,7 +153,7 @@ class OnomatopoeiaDataset(Dataset):
 
         return spec_list
 
-    def _pack_items(self, char2id, spec_list=[], wav_path_list=[]):
+    def _pack_items(self, char2id, spec_list, wav_path_list):
         """Pack spectrograms and other necessary items."""
         for word in prg(self.csv_files, prefix="Pack necessary items: "):
             tmp_df = pd.read_csv(word, header=None)
