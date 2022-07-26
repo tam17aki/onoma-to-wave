@@ -119,7 +119,7 @@ class GeneratorDemo:
     def load_model_params(self):
         """Load model parameters for inference."""
         checkpoint = torch.load(self.cfg.demo.pretrained_model)
-        self.model["seq2seq"].load_state_dict(checkpoint["seq2seq"])
+        self.model["seq2seq"].load_state_dict(checkpoint)
 
 
 def main(cfg: DictConfig):

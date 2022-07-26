@@ -77,17 +77,17 @@ class Trainer:
         ):
             epoch_loss = 0
             for data in dataloader:
-                self.optimizer["seq2seq"].zero_grad()
+                self.optimizer.zero_grad()
                 loss = self._training_step(data)
                 epoch_loss += loss.item()
                 loss.backward()
-                self.optimizer["seq2seq"].step()
+                self.optimizer.step()
 
             epoch_loss = epoch_loss / len(dataloader)
             print(f"Epoch {epoch}: loss = {epoch_loss:.6f}")
 
             if self.cfg.training.use_scheduler:
-                scheduler["seq2seq"].step()
+                scheduler.step()
 
     def save(self):
         """Save model parameters."""
@@ -103,4 +103,4 @@ class Trainer:
         filename = os.path.join(
             model_dir, f"{prefix}_epoch{n_epoch}_batch{n_batch}_lr{learning_rate}.pt"
         )
-        torch.save({"seq2seq": self.model["seq2seq"].state_dict()}, filename)
+        torch.save(self.model["seq2seq"].state_dict(), filename)

@@ -43,7 +43,6 @@ model:
    hidden_dim: 512
    n_layers_enc: 1  # エンコーダの層数 (双方向LSTM)
    n_layers_dec: 2  # デコーダの層数 (単方向LSTM)
-   criterion: "L1"  # 損失関数
 
 training:
    n_epoch: 350  # エポック数

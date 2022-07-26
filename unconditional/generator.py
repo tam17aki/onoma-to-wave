@@ -49,7 +49,6 @@ class Generator:
     def _get_nframes(self, wavfile):
         """Get the shape of the extracted spectrogram."""
         audio, _ = librosa.load(wavfile, sr=self.cfg.feature.sample_rate, mono=True)
-
         frames = librosa.util.frame(
             audio,
             frame_length=self.cfg.feature.win_length,
@@ -142,4 +141,4 @@ class Generator:
             model_dir, f"{prefix}_epoch{n_epoch}_batch{n_batch}_lr{learning_rate}.pt"
         )
         checkpoint = torch.load(model_file)
-        self.model["seq2seq"].load_state_dict(checkpoint["seq2seq"])
+        self.model["seq2seq"].load_state_dict(checkpoint)
