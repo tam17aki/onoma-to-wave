@@ -26,13 +26,8 @@ from torch import optim
 
 def get_optimizer(model, cfg):
     """Instantiate optimizer."""
-    optimizer = {"seq2seq": None, "event": None}
-
-    optimizer["seq2seq"] = optim.RAdam(
+    optimizer = optim.RAdam(
         model["seq2seq"].parameters(), lr=cfg.training.learning_rate
-    )
-    optimizer["event"] = optim.RAdam(
-        model["event"].parameters(), lr=cfg.training.learning_rate
     )
 
     return optimizer
@@ -40,17 +35,8 @@ def get_optimizer(model, cfg):
 
 def get_scheduler(optimizer, cfg):
     """Instantiate scheduler."""
-    scheduler = {"seq2seq": None, "evenet": None}
-
-    scheduler["seq2seq"] = optim.lr_scheduler.MultiStepLR(
-        optimizer["seq2seq"],
-        milestones=cfg.training.milestones,
-        gamma=cfg.training.gamma,
-    )
-    scheduler["event"] = optim.lr_scheduler.MultiStepLR(
-        optimizer["event"],
-        milestones=cfg.training.milestones,
-        gamma=cfg.training.gamma,
+    scheduler = optim.lr_scheduler.MultiStepLR(
+        optimizer, milestones=cfg.training.milestones, gamma=cfg.training.gamma
     )
 
     return scheduler

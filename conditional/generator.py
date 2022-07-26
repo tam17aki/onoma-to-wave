@@ -51,7 +51,6 @@ class Generator:
         """Get the shape of the extracted spectrogram."""
         audio, _ = librosa.load(wavfile, sr=self.cfg.feature.sample_rate, mono=True)
         audio = librosa.util.normalize(audio)
-
         frames = librosa.util.frame(
             audio,
             frame_length=self.cfg.feature.win_length,
@@ -126,7 +125,6 @@ class Generator:
 
         self.model["seq2seq"].eval()
         self.model["bos"].eval()
-        self.model["event"].eval()
 
         for data in prg(dataloader, prefix="Audio generation by trained models "):
             with torch.no_grad():
@@ -147,5 +145,4 @@ class Generator:
             model_dir, f"{prefix}_epoch{n_epoch}_batch{n_batch}_lr{learning_rate}.pt"
         )
         checkpoint = torch.load(model_file)
-        self.model["seq2seq"].load_state_dict(checkpoint["seq2seq"])
-        self.model["event"].load_state_dict(checkpoint["event"])
+        self.model["seq2seq"].load_state_dict(checkpoint)

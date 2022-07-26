@@ -40,30 +40,15 @@ def _make_pad_mask(lengths, maxlen=None):
     """
     if not isinstance(lengths, list):
         lengths = lengths.tolist()
-    bs = int(len(lengths))
     if maxlen is None:
         maxlen = int(max(lengths))
 
     seq_range = torch.arange(0, maxlen, dtype=torch.int64)
-    seq_range_expand = seq_range.unsqueeze(0).expand(bs, maxlen)
+    seq_range_expand = seq_range.unsqueeze(0).expand(int(len(lengths)), maxlen)
     seq_length_expand = seq_range_expand.new(lengths).unsqueeze(-1)
     mask = seq_range_expand >= seq_length_expand
 
     return mask
-
-
-def _get_lossfn_by_name(name: str):
-    """Get loss function by name (string)."""
-    criterion = {
-        "L1": nn.L1Loss(),
-        "L2": nn.MSELoss(),
-        "smooth_L1": nn.SmoothL1Loss(),
-    }
-
-    if name not in criterion:
-        raise ValueError(name, "is not a valid loss function.")
-
-    return criterion[name]
 
 
 class Encoder(nn.Module):
@@ -114,11 +99,11 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     """Decoder Class."""
 
-    def __init__(self, input_dim, output_dim, hidden_dim, n_layers=2):
+    def __init__(self, output_dim, hidden_dim, n_layers=2):
         """Initialize class.
 
-        input_dim: number of phonemes (dim. of onehot vector)
-        output_dim: number of spectrogram dimensions (= number of freq. bins)
+        input_dim: number of spectrogram dims. at current frame
+        output_dim: number of spectrogram dims. at next frame
         hidden_dim: number of dimensions of LSTM output vectors
         n_layers: number of hidden layers
         """
@@ -127,6 +112,7 @@ class Decoder(nn.Module):
         self.n_layers = n_layers
         self.output_dim = output_dim
 
+        input_dim = output_dim
         self.rnn = nn.LSTM(input_dim, hidden_dim, num_layers=n_layers, batch_first=True)
         self.fc_out = nn.Linear(hidden_dim, output_dim)
 
@@ -151,7 +137,7 @@ class Decoder(nn.Module):
 class Seq2Seq(nn.Module):
     """Seq2Seq Class Module."""
 
-    def __init__(self, model, device, criterion="L1", teacher_forcing_ratio=0.6):
+    def __init__(self, model, device, teacher_forcing_ratio=0.6):
         """Initialize class."""
         super().__init__()
 
@@ -159,7 +145,7 @@ class Seq2Seq(nn.Module):
         self.decoder = model["decoder"]
         self.event = model["event"]
         self.device = device
-        self.criterion = _get_lossfn_by_name(criterion)
+        self.criterion = nn.L1Loss()
         self.teacher_forcing_ratio = teacher_forcing_ratio
 
     def forward(self, onomatopes, bos_embeddings, event_label, n_frame):
@@ -173,9 +159,9 @@ class Seq2Seq(nn.Module):
 
         for frame in range(n_frame):
             if frame == 0:
-                output, encoder_state = self.decoder(inputs, decoder_hidden)
+                output, hidden_state = self.decoder(inputs, decoder_hidden)
             else:
-                output, encoder_state = self.decoder(inputs, encoder_state)
+                output, hidden_state = self.decoder(inputs, hidden_state)
 
             outputs[:, frame : frame + 1, :] = output
             inputs = output
@@ -184,12 +170,13 @@ class Seq2Seq(nn.Module):
 
     def get_loss(self, source, target, frame_lengths, event_label):
         """Compute loss in training."""
-        batch_size = target.shape[0]
         target_len = target.shape[1]
         target_dim = self.decoder.output_dim
 
         # tensor to store decoder outputs
-        outputs = torch.zeros(batch_size, target_len, target_dim, device=self.device)
+        outputs = torch.zeros(
+            target.shape[0], target_len, target_dim, device=self.device
+        )
 
         # last hidden state of the encoder is used
         # as the initial hidden state of the decoder
@@ -274,8 +261,7 @@ class BosEmbedding(nn.Module):
     def bos_embedding(self, n_batch=1):
         """Return embeddings of <BOS>."""
         bos = torch.tensor(
-            [[self.char2id["<BOS>"]] for _ in range(n_batch)],
-            device=self.device,
+            [[self.char2id["<BOS>"]] for _ in range(n_batch)], device=self.device
         )
         embedding = self.forward(bos)
 
@@ -287,44 +273,29 @@ def get_model(mapping_dict, cfg):
     char2id = mapping_dict.char2id
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = {
-        "encoder": None,
-        "decoder": None,
-        "seq2seq": None,
-        "event": None,
-        "bos": None,
-    }
+    model = {"seq2seq": None, "bos": None}
 
-    input_dim = cfg.feature.n_fft // 2 + 1
     output_dim = cfg.feature.n_fft // 2 + 1
     vocab_size = len(char2id)
 
-    model["encoder"] = Encoder(
+    encoder = Encoder(
         dimensions=(vocab_size, cfg.model.hidden_dim, cfg.model.hidden_dim),
         char2id=char2id,
         n_layers=cfg.model.n_layers_enc,
-    ).to(device)
-
-    model["decoder"] = Decoder(
-        input_dim, output_dim, cfg.model.hidden_dim, n_layers=cfg.model.n_layers_dec
-    ).to(device)
-
-    model["event"] = EventEmbedding(
-        input_dim=cfg.model.hidden_dim + len(cfg.sound_event),
-        output_dim=cfg.model.hidden_dim,
-    ).to(device)
-
-    model["seq2seq"] = Seq2Seq(
-        {
-            "encoder": model["encoder"],
-            "decoder": model["decoder"],
-            "event": model["event"],
-        },
-        device,
-        criterion=cfg.model.criterion,
-        teacher_forcing_ratio=cfg.training.teacher_forcing_ratio,
     )
 
+    decoder = Decoder(output_dim, cfg.model.hidden_dim, n_layers=cfg.model.n_layers_dec)
+
+    event = EventEmbedding(
+        input_dim=cfg.model.hidden_dim + len(cfg.sound_event),
+        output_dim=cfg.model.hidden_dim,
+    )
+
+    model["seq2seq"] = Seq2Seq(
+        {"encoder": encoder, "decoder": decoder, "event": event},
+        device,
+        teacher_forcing_ratio=cfg.training.teacher_forcing_ratio,
+    ).to(device)
     model["bos"] = BosEmbedding(vocab_size, output_dim, char2id, device).to(device)
 
     return model

@@ -117,7 +117,6 @@ class GeneratorDemo:
         os.makedirs(gen_dir, exist_ok=True)
 
         self.model["seq2seq"].eval()
-        self.model["event"].eval()
         self.model["bos"].eval()
 
         onomatopoeia = self._get_onoma_tensor()
@@ -133,8 +132,7 @@ class GeneratorDemo:
     def load_model_params(self):
         """Load model parameters for inference."""
         checkpoint = torch.load(self.cfg.demo.pretrained_model)
-        self.model["seq2seq"].load_state_dict(checkpoint["seq2seq"])
-        self.model["event"].load_state_dict(checkpoint["event"])
+        self.model["seq2seq"].load_state_dict(checkpoint)
 
 
 def main(cfg: DictConfig):
