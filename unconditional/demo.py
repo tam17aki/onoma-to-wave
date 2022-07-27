@@ -58,7 +58,7 @@ class GeneratorDemo:
         """Perform a inference step."""
         onomatopoeia = onomatopoeia.to(self.device)
 
-        bos_embedding = self.model["bos"].bos_embedding(n_batch=1)
+        bos_embedding = self.model["bos"].get_embedding(n_batch=1)
         outputs = self.model["seq2seq"].forward(
             onomatopoeia, bos_embedding, n_frame=n_frame
         )

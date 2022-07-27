@@ -225,7 +225,7 @@ class BosEmbedding(nn.Module):
         output = self.word_embeddings(bos_tensor)
         return output
 
-    def bos_embedding(self, n_batch=1):
+    def get_embedding(self, n_batch=1):
         """Return embeddings of <BOS>."""
         bos = torch.tensor(
             [[self.char2id["<BOS>"]] for _ in range(n_batch)], device=self.device

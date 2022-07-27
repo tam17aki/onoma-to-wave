@@ -49,7 +49,7 @@ class Trainer:
         specs = specs.to(self.device).float()
 
         # embedding of <BOS>
-        bos_embedding = self.model["bos"].bos_embedding(self.cfg.training.n_batch)
+        bos_embedding = self.model["bos"].get_embedding(self.cfg.training.n_batch)
 
         # attach <BOS> to the front frame
         target = torch.cat([bos_embedding, specs], dim=1)

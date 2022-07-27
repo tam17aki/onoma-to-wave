@@ -62,7 +62,7 @@ class Generator:
 
         onomatopoeia = onomatopoeia.to(self.device)
         n_frame = self._get_nframes(wavfiles[0])
-        bos_embedding = self.model["bos"].bos_embedding(n_batch=1)
+        bos_embedding = self.model["bos"].get_embedding(n_batch=1)
 
         # Generate standardized spectrogram
         outputs = self.model["seq2seq"].forward(
