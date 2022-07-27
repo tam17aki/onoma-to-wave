@@ -52,7 +52,7 @@ class Trainer:
         event_label = F.one_hot(event_label, num_classes=len(self.cfg.sound_event))
 
         # embedding of <BOS>
-        bos_embedding = self.model["bos"].bos_embedding(self.cfg.training.n_batch)
+        bos_embedding = self.model["bos"].get_embedding(self.cfg.training.n_batch)
 
         # attach <BOS> to the front frame
         target = torch.cat([bos_embedding, specs], dim=1)

@@ -60,7 +60,7 @@ class GeneratorDemo:
         event_label = sound_event.to(self.device).long()
         event_label = F.one_hot(event_label, num_classes=len(self.cfg.sound_event))
 
-        bos_embedding = self.model["bos"].bos_embedding(n_batch=1)
+        bos_embedding = self.model["bos"].get_embedding(n_batch=1)
         outputs = self.model["seq2seq"].forward(
             onomatopoeia, bos_embedding, event_label, n_frame=n_frame
         )
