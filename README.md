@@ -1,5 +1,5 @@
 # Unofficial implementations of Onoma-to-Wave
-This repository provides unofficial implementations of Onoma-to-Wave.
+This repository provides unofficial implementations of Onoma-to-Wave [1].
 
 ## Licence
 MIT licence.
@@ -57,7 +57,7 @@ First, edit `config.yaml` and provide the path to the trained model according to
   
 ## References
 
-Yuki Okamoto, Keisuke Imoto, Shinnosuke Takamichi, Ryosuke Yamanishi, Takahiro Fukumori and Yoichi Yamashita, 
+[1] Yuki Okamoto, Keisuke Imoto, Shinnosuke Takamichi, Ryosuke Yamanishi, Takahiro Fukumori and Yoichi Yamashita, 
 "Onoma-to-wave: Environmental Sound Synthesis from Onomatopoeic Words", 
 APSIPA Transactions on Signal and Information Processing: Vol. 11: No. 1, e13. http://dx.doi.org/10.1561/116.00000049
 ```
