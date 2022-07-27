@@ -128,10 +128,10 @@ class Decoder(nn.Module):
         # cell = [n_layers * 2, batch_size, hidden_dim]
         output, (hidden, cell) = self.rnn(inputs, encoder_state)
 
-        # prediction = [batch_size, output_dim]
-        prediction = self.fc_out(output.squeeze(1))
+        # prediction = [batch_size, 1, output_dim]
+        prediction = self.fc_out(output)
 
-        return prediction.unsqueeze(1), (hidden, cell)
+        return prediction, (hidden, cell)
 
 
 class Seq2Seq(nn.Module):
